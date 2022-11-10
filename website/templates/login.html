@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block title %}login{% endblock %}
+{% block content %}
+<form method="POST" action={{ url_for('views.login') }}>
+    <h3 align="center">Search</h3>
+
+    <label for="name">client name:</label>
+    <input class="form-control" list="datalistOptions" id="dt" placeholder="Type to search..." name="client">
+    <datalist id="datalistOptions">
+        {% for i in range(count) %}
+        <option>
+            {{result[i][0]}}
+        </option>
+        {% endfor %}
+    </datalist>
+    <br>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+{% endblock %}

@@ -1,0 +1,167 @@
+{%extends 'base.html'%}
+{%block title%}info client list{%endblock %}
+{%block content%}
+<div>
+    <table border="black" class="table">
+        <tr class="table-primary">
+            <td>idc</td>
+            <td>code_clt</td>
+            <td>nom</td>
+            <td>tel</td>
+            <td>gsm</td>
+            <td>pers_cont</td>
+            <td>fax</td>
+            <td>email</td>
+            <td>site_web</td>
+            <td>date_aff</td>
+            <td>mf</td>
+            <td>rc</td>
+            <td>adresse</td>
+            <td>assujete</td>
+            <td>type</td>
+            <td>timbre</td>
+            <td>etat</td>
+            <td>plafond</td>
+            <td>client_id</td>
+            <td>Exercice</td>
+            <td>Total</td>
+
+        </tr>
+        {% for j in range(count) %}
+        <tr>
+            {% for i in range(19) %}
+            <td>
+                {{result[j][i]}}
+            </td>
+            {% endfor %}
+            <td>
+                <input list="datalistOptions" placeholder="year" name="year" class="form-control">
+                <datalist id="datalistOptions">
+                    <option>2022</option>
+                    <option>2021</option>
+                    <option>2020</option>
+                </datalist>
+            </td>
+            <td>
+                <button onclick="myFun({{result[j][0]}})" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">Check</button>
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    <div id="content"></div>
+</div>
+<script>
+    function myFun(x) {
+        $.ajax({
+            url: '/vente_client?id=' + x,
+            method: 'GET',
+            success: function (data) {
+                var html = '<table class="table" border="black">';
+                type = [' en facture', ' en ticket', '   en bon livraison'];
+                html += '<tr class="table-primary"><th  colspan="2">etat de vente</th><th>etat reglement</th></tr>';
+                for (var i = 0; i < data[0].length; ++i) {
+                    html += '<tr><td>';
+                    html += type[i];
+                    html += '</td><td>';
+                    html += parseFloat(data[0][i]).toFixed(3);
+                    html += '</td><td>';
+                    html += parseFloat(data[3][i]).toFixed(3);
+                    html += '</td></tr>';
+                };
+
+                html += '<tr class="table-secondary" ><td><b>totale</b></td>';
+                let tot = 0;
+                let reg_tot = 0;
+                for (var i = 0; i < 3; ++i) {
+                    tot += parseFloat(data[0][i]);
+                    reg_tot += parseFloat(data[3][i]);
+                }
+                html += '<td>';
+                html += tot.toFixed(3);
+                html += '</td><td>';
+                html += reg_tot.toFixed(3);
+                html += '</td></tr>';
+
+                html += '<th colspan="3" class="table-primary">etat d\'achat</th>';
+                for (var i = 0; i < data[1].length; ++i) {
+                    html += '<tr><td >';
+                    html += type[i];
+                    html += '</td><td colspan="2">';
+                    html += parseFloat(data[1][i]).toFixed(3);
+                    html += '</td></tr>';
+                };
+
+
+                html += '<tr class="table-secondary"><td><b>totale</b></td>';
+                let tot1 = 0;
+                for (var i = 0; i < 3; ++i) {
+                    tot1 += parseFloat(data[1][i]);
+                }
+                html += '<td colspan="2">';
+                html += tot1.toFixed(3);
+                html += '</td></tr>';
+
+
+                html += '<th colspan="3" class="table-primary">Benefice</th>';
+                for (var i = 0; i < data[0].length; ++i) {
+                    html += '<tr><td>';
+                    html += type[i];
+                    html += '</td><td colspan="2">';
+                    html += parseFloat(data[2][i]).toFixed(3);
+                    html += '</td></tr>';
+                };
+
+                html += '<tr class="table-secondary"><td><b>totale</b></td>';
+                let tot2 = 0;
+                for (var i = 0; i < 3; ++i) {
+                    tot2 += parseFloat(data[2][i]);
+                }
+                html += '<td colspan="2">';
+                html += tot2.toFixed(3);
+                html += '</td></tr></table>';
+
+
+
+                html += '<table class="table" border="black">';
+                html += '<tr ><td class="table-info"><b> Totale de vente</b> </td><td class="table-success"><b> Totale du reglement</b> </td><td class="table-danger"><b>Rest</b></td></tr><tr><td class="table-info">'
+                html += tot.toFixed(3);
+                html += '</td><td class="table-success">';
+                html += reg_tot.toFixed(3);
+                html += '</td><td class="table-danger">'
+                tot_rest = tot.toFixed(3) - reg_tot.toFixed(3);
+                html += tot_rest.toFixed(3);
+                html += '</td></tr></table>';
+
+                let tot_paye = 0;
+                for (var i = 0; i < 3; ++i) {
+                    tot_paye += parseFloat(data[4][i]);
+                }
+                let en_cours = 0;
+                en_cours = reg_tot.toFixed(3) - tot_paye.toFixed(3);
+                html += '<table class="table" border="black">';
+                html += '<tr class="table-info"><td ><b>totale reglement </b></td><td><b>totale payee</b></td><td><b>totale encours</b></td></tr><tr><td>';
+                html += reg_tot.toFixed(3);
+                html += '</td><td>';
+                html += tot_paye.toFixed(3);
+                html += '</td><td>';
+                html += en_cours.toFixed(3);
+                html += '</td></tr></table>';
+                // 1 espece 
+                // 2 tpe 
+                // 3 cheque 
+                // 4 traite 
+                // 5 cheque cadeaux
+                // 6 vierment
+                //  cours client, liste des encours client montant type date
+                // impremente @media print css
+                $("#content").html(html);
+            }
+        })
+    }
+</script>
+
+{%endblock%}
