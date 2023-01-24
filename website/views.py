@@ -7,7 +7,12 @@ views = Blueprint('views', __name__)
 
 @views.route('/')
 def home():
-    return render_template("home.html")
+    return render_template("base.html")
+
+
+@views.route('/index', methods=['GET'])
+def index():
+    return render_template("index.html")
 
 
 @views.route('/vente_client', methods=['GET'])
@@ -16,14 +21,13 @@ def vente_client():
         data = request.args.get('id')
         year = request.form.get('year')
         c = client(data, year)
-
-        c.find_exercice()
+        # c.find_exercice()
         c.etat_vente()
         c.etat_achat()
         c.reglement()
         c.reg_paye()
         c.info_reg()
-        return [c.display_etat_vente(), c.display_etat_achat(), c.difference(), c.ret_reg(), c.ret_paye(), c.info_reg()]
+        return [c.display_etat_vente(), c.display_etat_achat(), c.difference(), c.ret_reg(), c.ret_paye(), c.info_reg(), c.ret_inf()]
 
 
 @ views.route('/login', methods=['GET', 'POST'])
@@ -31,16 +35,12 @@ def login():
     if request.method == 'POST':
         name = request.form.get('client')
         sc = search_client(name)
+
         return render_template('info.html', count=len(sc.search()), result=sc.search())
 
     else:
         # return render_template("login.html")
         return render_template("login.html", result=client_name_list.name_list(), count=len(client_name_list.name_list()))
-
-
-@ views.route('/logout')
-def logout():
-    return render_template("home.html")
 
 
 @ views.route('/sign_up', methods=['GET', 'POST'])
@@ -62,3 +62,8 @@ def sign_up():
             flash('Account created!', category='success')
 
     return render_template("sign_up.html")
+
+
+@views.route('/doughnuts')
+def doughnuts():
+    return render_template("doughnuta.html")

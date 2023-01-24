@@ -2,7 +2,7 @@
 {%block title%}info client list{%endblock %}
 {%block content%}
 <div>
-    <table border="black" class="table">
+    <table border="black" class="table print-container">
         <tr class="table-primary">
             <td>idc</td>
             <td>code_clt</td>
@@ -53,6 +53,7 @@
 
     </table>
     <div id="content"></div>
+
 </div>
 <script>
     function myFun(x) {
@@ -60,9 +61,14 @@
             url: '/vente_client?id=' + x,
             method: 'GET',
             success: function (data) {
-                var html = '<table class="table" border="black">';
+                var html = '<h1>Recu pour le facture de paiment</h1><br>'
+                html += '<b><a>Nom client</a>&nbsp;&nbsp;&nbsp;&nbsp;Passager</b><br><br>'
+                html += '<b><a>Code client: </a>&nbsp;&nbsp;&nbsp;&nbsp;2</b> </br><br>'
+                html += '<b><a>Reference: </a>&nbsp;&nbsp;&nbsp;&nbsp;SF50024F</b> </br><br>'
+                html += '<b><a>Date de creation: </a>&nbsp;&nbsp;&nbsp;&nbsp;12/12/2022</b> </br><br>'
+                html += '<table class="table" border="black">';
                 type = [' en facture', ' en ticket', '   en bon livraison'];
-                html += '<tr class="table-primary"><th  colspan="2">etat de vente</th><th>etat reglement</th></tr>';
+                html += '<tr class="table-primary"><th  colspan="2">Etat de vente</th><th>Etat de reglement</th></tr>';
                 for (var i = 0; i < data[0].length; ++i) {
                     html += '<tr><td>';
                     html += type[i];
@@ -73,7 +79,7 @@
                     html += '</td></tr>';
                 };
 
-                html += '<tr class="table-secondary" ><td><b>totale</b></td>';
+                html += '<tr class="table-secondary" ><td><b>Totale</b></td>';
                 let tot = 0;
                 let reg_tot = 0;
                 for (var i = 0; i < 3; ++i) {
@@ -86,7 +92,7 @@
                 html += reg_tot.toFixed(3);
                 html += '</td></tr>';
 
-                html += '<th colspan="3" class="table-primary">etat d\'achat</th>';
+                html += '<th colspan="3" class="table-primary">Etat d\'achat</th>';
                 for (var i = 0; i < data[1].length; ++i) {
                     html += '<tr><td >';
                     html += type[i];
@@ -96,7 +102,7 @@
                 };
 
 
-                html += '<tr class="table-secondary"><td><b>totale</b></td>';
+                html += '<tr class="table-secondary"><td><b>Totale</b></td>';
                 let tot1 = 0;
                 for (var i = 0; i < 3; ++i) {
                     tot1 += parseFloat(data[1][i]);
@@ -115,7 +121,7 @@
                     html += '</td></tr>';
                 };
 
-                html += '<tr class="table-secondary"><td><b>totale</b></td>';
+                html += '<tr class="table-secondary"><td><b>Totale</b></td>';
                 let tot2 = 0;
                 for (var i = 0; i < 3; ++i) {
                     tot2 += parseFloat(data[2][i]);
@@ -143,21 +149,76 @@
                 let en_cours = 0;
                 en_cours = reg_tot.toFixed(3) - tot_paye.toFixed(3);
                 html += '<table class="table" border="black">';
-                html += '<tr class="table-info"><td ><b>totale reglement </b></td><td><b>totale payee</b></td><td><b>totale encours</b></td></tr><tr><td>';
+                html += '<tr class="table-info"><td ><b>Totale reglement </b></td><td><b>Totale payee</b></td><td><b>Totale encours</b></td></tr><tr><td>';
                 html += reg_tot.toFixed(3);
                 html += '</td><td>';
                 html += tot_paye.toFixed(3);
                 html += '</td><td>';
                 html += en_cours.toFixed(3);
                 html += '</td></tr></table>';
-                // 1 espece 
-                // 2 tpe 
-                // 3 cheque 
-                // 4 traite 
-                // 5 cheque cadeaux
-                // 6 vierment
-                //  cours client, liste des encours client montant type date
-                // impremente @media print css
+
+
+                html += '<table class="table" border="black">';
+                html += '<tr class="table-primary"><td>Type de reglement en facture </td><td>Montant</td></tr>';
+                html += '<tr><td>espece</td><td>'
+                html += data[6][0][0]
+                html += '</td></tr>'
+                html += '<tr><td>cheque</td><td>'
+                html += data[6][0][1]
+                html += '</td></tr>'
+                html += '<tr><td>tpe</td><td>'
+                html += data[6][0][2]
+                html += '</td></tr>'
+                html += '<tr><td>cheque cadeaux</td><td>'
+                html += data[6][0][3]
+                html += '</td></tr>'
+                html += '<tr><td>vierment</td><td>'
+                html += data[6][0][4]
+                html += '</td></tr>'
+                html += '<tr><td>traite</td><td>'
+                html += data[6][0][5]
+                html += '</td></tr>'
+                html += '</table>'
+
+                html += '<table class="table new-page" border="black">';
+                html += '<tr class="table-primary"><td>Type de reglement en ticket </td><td>Montant</td></tr>';
+                html += '<tr><td>espece</td><td>'
+                html += data[6][1][0]
+                html += '</td></tr>'
+                html += '<tr><td>cheque</td><td>'
+                html += data[6][1][1]
+                html += '</td></tr>'
+                html += '<tr><td>cheque cadeaux</td><td>'
+                html += data[6][1][2]
+                html += '</td></tr>'
+                html += '<tr><td>tpe</td><td>'
+                html += data[6][1][3]
+                html += '</td></tr>'
+                html += '</table>'
+
+                html += '<table class="table" border="black">';
+                html += '<tr class="table-primary"><td>Type de reglement en bon livraison </td><td>Montant</td></tr>';
+                html += '<tr><td>espece</td><td>'
+                html += data[6][2][0]
+                html += '</td></tr>'
+                html += '<tr><td>tpe</td><td>'
+                html += data[6][2][1]
+                html += '</td></tr>'
+                html += '<tr><td>cheque</td><td>'
+                html += data[6][2][2]
+                html += '</td></tr>'
+                html += '<tr><td>traite</td><td>'
+                html += data[6][2][3]
+                html += '</td></tr>'
+                html += '<tr><td>vierment</td><td>'
+                html += data[6][2][4]
+                html += '</td></tr>'
+                html += '<tr><td>cheque cadeaux</td><td>'
+                html += data[6][2][5]
+                html += '</td></tr>'
+                html += '</table>'
+
+                html += '<button class="btn btn-primary print-container" alt="print screen" onclick="window.print();" target="_blank" style="cursor:pointer;">print </button > '
                 $("#content").html(html);
             }
         })

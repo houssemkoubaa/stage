@@ -18,11 +18,13 @@ class client():
         self.year = year
 
     def find_exercice(self):
+        test = ''
         yearlist = ['toutprod_bestbuytn_2020',
                     'toutprod_bestbuytn_2021', 'toutprod_bestbuytn_2022']
         for i in range(0, len(yearlist)):
             if str(self.year) in yearlist[i]:
-                self.databasename = yearlist[i]
+                test = yearlist[i]
+        self.databasename = test
 
     def info_reg(self):
         try:
@@ -67,7 +69,7 @@ class client():
             print('error while connecting ', e)
         finally:
             if connection.is_connected():
-                # cursor.close()
+                cursor.close()
                 connection.close()
 
     def ret_inf(self):
@@ -110,7 +112,9 @@ class client():
             print('error while connecting ', e)
         finally:
             if connection.is_connected():
-                # cursor.close()
+                cursor.close()
+                # cursor1.close()
+                # cursor2.close()
                 connection.close()
 
     def ret_paye(self):
@@ -153,7 +157,9 @@ class client():
             print('error while connecting ', e)
         finally:
             if connection.is_connected():
-                # cursor.close()
+                cursor.close()
+                # cursor1.close()
+                # cursor2.close()
                 connection.close()
 
     def ret_reg(self):
@@ -205,6 +211,8 @@ class client():
         finally:
             if connection.is_connected():
                 cursor.close()
+                # cursor1.close()
+                # cursor2.close()
                 connection.close()
 
     def etat_achat(self):
@@ -253,7 +261,8 @@ class client():
         finally:
             if connection.is_connected():
                 cursor.close()
-
+                # cursor1.close()
+                # cursor2.close()
                 connection.close()
 
     def display_etat_vente(self):
@@ -294,13 +303,35 @@ class search_client():
                 cursor.execute(stmt, (self.name, ))
                 record = cursor.fetchall()
                 return record
-
         except Error as e:
             print('error while connecting ', e)
         finally:
             if connection.is_connected():
                 cursor.close()
                 connection.close()
+
+    # def column_client_table(self):
+    #     try:
+    #         connection = mysql.connector.connect(
+    #             host='localhost',
+    #             database='bestbuytn',
+    #             user='root',
+    #             password='692000DDn'
+    #         )
+    #         if connection.is_connected():
+    #             db_info = connection.get_server_info()
+    #             print("connected succefully...", db_info)
+    #             cursor = connection.cursor()
+    #             stmt = 'select column_name from INFORMATION_SCHEMA.COLUMNS where table_name = \'client\''
+    #             cursor.execute(stmt)
+    #             record = cursor.fetchall()
+    #             return record
+    #     except Error as e:
+    #         print('error while connecting ', e)
+    #     finally:
+    #         if connection.is_connected():
+    #             cursor.close()
+    #             connection.close()
 
 
 class client_name_list():
@@ -328,3 +359,16 @@ class client_name_list():
             if connection.is_connected():
                 cursor.close()
                 connection.close()
+
+
+# c = client(2176, 2022)
+# # c.find_exercice()
+# print(c.year)
+# print(c.idc)
+# print("-----")
+# c.etat_vente()
+# c.etat_achat()
+# print("-----")
+# print(c.prix)
+# print(c.puachat)
+# print("-----")
